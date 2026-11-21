@@ -134,7 +134,7 @@ td{padding:10px;border-top:1px solid var(--line);vertical-align:middle}
 <main id="main"></main>
 
 <script id="appjs">
-var RO=false,seedTS=0;
+var RO=false,seedTS=0,GATE=false;
 
 function b64e(t){return btoa(unescape(encodeURIComponent(t)))}
 function b64d(b){var r=atob(b);try{return decodeURIComponent(escape(r))}catch(e){return r}}
@@ -469,6 +469,7 @@ function load(){
   try{r=localStorage.getItem(KEY);if(r)apply(JSON.parse(r))}catch(e){}
   try{GH=JSON.parse(localStorage.getItem("chapo_gh")||"null")}catch(e){}
   try{lastEdit=+localStorage.getItem("chapo_ts")||0}catch(e){}
+  try{var hg=hostGH(location);if(hg&&!(GH&&GH.t)){RO=true;GATE=true;GH=hg}}catch(e){}
 }
 function hasPrev(){try{return !!localStorage.getItem(KEY+"_prev")}catch(e){return false}}
 function canSave(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t");return true}catch(e){return false}}
@@ -478,6 +479,12 @@ function histHTML(){
   hist.slice().reverse().forEach(function(x){var c=byId(x.id);if(!c)return;h+='<li>'+lg(c)+'<b class="club">'+esc(c.club)+'</b><span class="pct">'+(x.nm?esc(x.nm)+' · ':'')+esc(x.d)+' · '+x.n+' takım, '+x.t+' tur</span></li>'});
   return h+'</ul></div>';
 }
+document.getElementById("main").addEventListener("click",function(e){
+  var b=e.target.closest("[data-gate]");if(!b)return;
+  var t=(document.getElementById("gt").value||"").trim();if(!t||!GH)return;
+  try{localStorage.setItem("chapo_gh",JSON.stringify({u:GH.u,r:GH.r,t:t}))}catch(x){}
+  location.reload();
+});
 function ghHTML(){
   if(window.claude&&window.claude.use)return '';
   var g=GH||Object.assign({u:"",r:"",t:""},hostGH(location)||{});
@@ -485,7 +492,7 @@ function ghHTML(){
 }
 function hhmm(){var t=new Date();return ("0"+t.getHours()).slice(-2)+":"+("0"+t.getMinutes()).slice(-2)}
 function fmtTs(ts){var t=new Date(ts);return ("0"+t.getDate()).slice(-2)+"."+("0"+(t.getMonth()+1)).slice(-2)+"."+t.getFullYear()+" "+("0"+t.getHours()).slice(-2)+":"+("0"+t.getMinutes()).slice(-2)}
-function roBanner(){return '<p class="hint">👀 Görüntüleme modu: kupalar, lig, goller ve ödülleri lig yöneticisi girer.'+(seedTS?' Son güncelleme: '+fmtTs(seedTS)+'.':'')+(GH?' İnternet bağlıysa uygulama açıkken kendiliğinden güncellenir.':'')+'</p>'}
+function roBanner(){return (GATE?'<details class="bk"><summary>🔑 Yönetici girişi</summary><div class="bdform"><input id="gt" type="text" placeholder="Anahtar (token)" autocomplete="off"><button class="btn" data-gate="1">Giriş</button></div></details>':'')+'<p class="hint">👀 Görüntüleme modu: kupalar, lig, goller ve ödülleri lig yöneticisi girer.'+(seedTS?' Son güncelleme: '+fmtTs(seedTS)+'.':'')+(GH?' İnternet bağlıysa uygulama açıkken kendiliğinden güncellenir.':'')+'</p>'}
 function roUI(){var b=document.querySelector('nav button[data-t="lig"]');if(b)b.textContent="Lig"}
 function backupHTML(){
   var m=bkmsg;bkmsg="";
