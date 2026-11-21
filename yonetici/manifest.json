@@ -1,0 +1,25 @@
+{
+ "name": "Chapo Yönetici",
+ "short_name": "Chapo Yönetici",
+ "id": "/chapo-veri/yonetici/",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "background_color": "#8c0f1f",
+ "theme_color": "#8c0f1f",
+ "lang": "tr",
+ "icons": [
+  {
+   "src": "../icon-y-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any"
+  },
+  {
+   "src": "../icon-y-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any"
+  }
+ ]
+}
