@@ -303,7 +303,7 @@ function renderLigA(){
     var n=L.sel.length,per=n*(n-1)/2;
     h+='<h2 class="step">2. Kaç tur oynanacak?</h2><p class="hint">'+n+' takım seçtin. 1 tur: herkes herkesle bir kez oynar ('+per+' maç). 2 tur: iç saha ve dış saha.</p><div class="act">';
     [1,2,3,4].forEach(function(k){h+='<button class="btn big" data-lg="turns" data-n="'+k+'">'+k+' tur · '+per*k+' maç</button>'});
-    h+='<button class="btn ghost" data-lg="back">Geri</button></div><div>';
+    h+='<button class="btn ghost" data-lg="back">Geri</button></div><p class="hint">İstediğin tur sayısını kendin de yazabilirsin (1-100):</p><div class="act"><input id="turnn" class="gi" style="width:150px" type="number" min="1" max="100" inputmode="numeric" placeholder="örn. 15"><button class="btn big" data-lg="turnsc">Bu kadar tur oynansın</button><span class="pct" id="turnhint"></span></div><div>';
     L.sel.forEach(function(id){h+=lg(byId(id))});
     h+='</div>';
   }else{
@@ -343,7 +343,7 @@ document.getElementById("main").addEventListener("click",function(e){
   else if(a==="all"){L.sel=pool().map(function(c){return c.id})}
   else if(a==="next"){L.step="turn"}
   else if(a==="back"){L.step="pick"}
-  else if(a==="turns"){L.name=(L.name||"").trim()||"İsimsiz Lig";L.turns=+b.dataset.n;L.m=makeFix(L.sel,L.turns);L.step="play";L.champ=null;L.tie=null;L.id="l"+Date.now();LS.push(L)}
+  else if(a==="turns"||a==="turnsc"){var tn=a==="turnsc"?Math.floor(+(document.getElementById("turnn").value)):+b.dataset.n;if(!(tn>=1&&tn<=100)){var th=document.getElementById("turnhint");if(th)th.textContent="1 ile 100 arasında bir sayı yaz.";return}L.name=(L.name||"").trim()||"İsimsiz Lig";L.turns=tn;L.m=makeFix(L.sel,L.turns);L.step="play";L.champ=null;L.tie=null;L.id="l"+Date.now();LS.push(L)}
   else if(a==="newl"){L=newL()}
   else if(a==="del"){if(!confirm("Bu lig silinsin mi?"))return;var di=LS.indexOf(L);if(di>-1)LS.splice(di,1);L=LS[LS.length-1]||newL()}
   else if(a==="reset"){L=newL()}
@@ -367,7 +367,8 @@ document.getElementById("main").addEventListener("input",function(e){
   document.getElementById("stand").innerHTML=standHTML();
   document.getElementById("fin").innerHTML=finHTML();
 });
-document.getElementById("main").addEventListener("input",function(e){if(e.target.id==="ligname"){L.name=e.target.value;save()}});
+document.getElementById("main").addEventListener("input",function(e){if(e.target.id==="ligname"){L.name=e.target.value;save()}
+  if(e.target.id==="turnn"){var v=Math.floor(+e.target.value),n=L.sel.length,th=document.getElementById("turnhint");if(th)th.textContent=(v>=1&&v<=100)?(v+" tur = "+(n*(n-1)/2*v)+" maç"):""}});
 var KEY="chapocikolik_v1",hist=[],bkmsg="",gols={},mst={},aw={bd:[],ge:[]},pend={bd:"",ge:""},awNote={bd:"",ge:""};
 var AWD={
   bd:{h:"En çok Ballon d’Or alan oyuncular",ic:"🏆",one:"Ballon d’Or",who:"Oyuncu"},
